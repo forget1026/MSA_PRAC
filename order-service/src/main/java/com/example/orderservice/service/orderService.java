@@ -1,0 +1,12 @@
+package com.example.orderservice.service;
+
+import com.example.orderservice.dto.OrderDto;
+import com.example.orderservice.entity.OrderEntity;
+
+public interface orderService {
+    OrderDto createOrder(OrderDto orderDetails);
+
+    OrderDto getOrderByOrderId(String orderId);
+
+    Iterable<OrderEntity> getOrderByUserId(String userId);
+}
