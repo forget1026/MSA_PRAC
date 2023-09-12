@@ -18,9 +18,9 @@ public class WebSecurity {
 
         return http.csrf().disable()
                 .authorizeRequests()
-//                .antMatchers("/users/**").permitAll()
-                .antMatchers("/**")
-                .hasIpAddress("172.26.32.1")
+                .antMatchers("/users/**").permitAll()
+//                .antMatchers("/**")
+//                .hasIpAddress("172.26.32.1")
                 .and()
                 .headers().frameOptions().disable()
                 .and()
@@ -32,13 +32,18 @@ public class WebSecurity {
         return new AuthenticationFilter(authenticationManager);
     }
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 스프링 시큐리티의 인증을 담당하는 AuthenticationManager는 이전 설정 방법으로 authenticationManagerBuilder를 이용해서 userDetailsService와 passwordEncoder를 설정해주어야 했습니다.
+     * 그러나 변경된 설정에서는 AuthenticationManager 빈 생성 시 스프링의 내부 동작으로 인해 위에서 작성한 UserSecurityService와 PasswordEncoder가 자동으로 설정됩니다.
+     */
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }
