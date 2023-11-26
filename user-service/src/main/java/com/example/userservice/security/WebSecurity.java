@@ -1,5 +1,6 @@
 package com.example.userservice.security;
 
+import com.example.userservice.security.filter.RequestCheckFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,12 +19,13 @@ public class WebSecurity {
 
         return http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/users/**").permitAll()
-//                .antMatchers("/**")
-//                .hasIpAddress("172.26.32.1")
-                .and()
+//                .antMatchers("/users/**").permitAll()
+                .antMatchers("/error/**").permitAll()
+                .antMatchers("/**").hasIpAddress("192.168.0.2")
+                 .and()
                 .headers().frameOptions().disable()
                 .and()
+                .addFilterBefore(new RequestCheckFilter(), AuthenticationFilter.class)
                 .addFilter(getAuthenticationFilter(authenticationManager))
                 .build();
     }
@@ -31,7 +33,6 @@ public class WebSecurity {
     private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
         return new AuthenticationFilter(authenticationManager);
     }
-
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

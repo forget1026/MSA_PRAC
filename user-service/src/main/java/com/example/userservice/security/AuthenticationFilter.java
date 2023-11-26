@@ -3,6 +3,7 @@ package com.example.userservice.security;
 import com.example.userservice.vo.RequestLogin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@Slf4j
 @RequiredArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -25,9 +27,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             RequestLogin requestLogin = objectMapper.readValue(request.getInputStream(), RequestLogin.class);
-
-            return getAuthenticationManager()
-                    .authenticate(new UsernamePasswordAuthenticationToken(requestLogin.getEmail(), requestLogin.getPassword(), new ArrayList<>()));
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestLogin.getEmail(),
+                            requestLogin.getPassword(), new ArrayList<>())
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
